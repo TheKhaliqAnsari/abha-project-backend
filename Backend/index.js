@@ -14,6 +14,25 @@ const corsOptions = {
   };
 app.use(cors(corsOptions))
 
+app.get('/test-network', async (req, res) => {
+    const url = `https://api.github.com/users/octocat`;
+    try {
+        const response = await axios.get(url, { timeout: 10000 }, {
+            headers: { Authorization: `token ${process.env.GITHUB_TOKEN}` },
+        }); // 10 seconds timeout
+        console.log("respinse: ", response);
+        res.status(200).json({
+            message: "Network connectivity is fine",
+            data: response.data,
+        });
+    } catch (error) {
+        res.status(500).json({
+            message: "Failed to connect to the GitHub API",
+            error: error.response?.data || error.message,
+        });
+    }
+});
+
 app.get("/",(req,res)=>{
     res.send("Hello from Autonomize Backend!!!");
 })
